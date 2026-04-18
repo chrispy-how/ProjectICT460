@@ -518,7 +518,7 @@ def log_unauthorized_edit_attempt(track_id):
     # Return an empty response so the browser stays quiet
     return ("", 204)
 # -------------------------
-#        MAIN
+#        MAIN making some changes so I can commit and push to github and show the new logs with colors
 # -------------------------
 
 class NoStaticLogs(WSGIRequestHandler):
