@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<h2>Confirm Delete Track</h2>
+
+{% if error_msg %}
+<div class="alert alert-danger">{{ error_msg }}</div>
+{% endif %}
+
+<p>Are you sure you want to delete the track <strong>{{ track.Name }}</strong>?</p>
+
+<form method="POST">
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="{{ url_for('tracks') }}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock main %}
+
+{% block footer %}
+<p>Footer</p>
+{% endblock footer %}

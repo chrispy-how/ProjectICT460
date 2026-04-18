@@ -1,0 +1,8 @@
+.image-container { /* Style to maintain aspect ratio and handle overflow */
+  overflow: hidden;
+}
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;  /* Prevents small space below image */
+}

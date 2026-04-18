@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<p> {{ content }} </p>
+<div class="container">
+    <h1>Image Gallery</h1>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="image-container gx-5 gy-3"> <img src="{{ url_for('static', filename='media/rowOfRecords.png') }}" class="card-image-top" alt="Image 1">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h5 class="card-title text-center">Our Record Collection</h5>
+            <p class="card-text text-center">Come view our selection of Vinyls.</p>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col">
+            <h5 class="card-title text-center">Whether you're looking for something hot off the presses, or something vintage from long ago...</h5>
+        </div>
+        <div class="col">
+            <div class="image-container"> <img src="{{ url_for('static', filename='media/simpleRecord.png') }}" alt="Image 1" class="img-fluid d-block mx-auto">
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col">
+            <div class="image-container"> <img src="{{ url_for('static', filename='media/retroGals.jpg') }}" alt="Image 1" class="img-fluid d-block mx-auto">
+            </div>
+        </div>
+        <div class="col">
+            <h5 class="card-title text-center">you'll be sure to find it here. Or ask nice, and we might even be able to order you something even more fantastic!</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="image-container gx-5 gy-3"> <img src="{{ url_for('static', filename='media/twigNeedle.jpg') }}" class="card-image-top" alt="Image 1">
+    </div>
+</div>
+
+{% endblock main %}
+{% block footer %}
+<p>Footer</p>
+
+{% endblock footer %}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<div class="row mt-4">
+    <div class="col-md-12 mb-3">
+        <a href="{{ url_for('artist_add') }}" class="btn btn-success">Add New Artist</a>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">Artists & Albums</h4>
+            </div>
+            <div class="card-body">
+                {% if artists %}
+                <div class="accordion" id="artistAccordion">
+                    {% for artist in artists %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ artist.ArtistId }}" aria-expanded="false" aria-controls="collapse{{ artist.ArtistId }}">
+                                <strong>{{ artist.Name }}</strong>
+                                {% if artist.Albums %}<span class="badge bg-info ms-2">{{ artist.Albums|length }} album{{ 's' if artist.Albums|length != 1 else '' }}</span>{% endif %}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ artist.ArtistId }}" class="accordion-collapse collapse" data-bs-parent="#artistAccordion">
+                            <div class="accordion-body">
+                                {% if artist.Albums %}
+                                <ul class="list-group mb-3">
+                                    {% for album in artist.Albums %}
+                                    <li class="list-group-item">{{ album.Title }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text">No albums found for this artist.</p>
+                                {% endif %}
+                                <div>
+                                    <a href="{{ url_for('artist_edit', artist_id=artist.ArtistId) }}"
+                                    class="btn btn-sm btn-primary">
+                                    Edit
+                                    </a>                                   
+                                    <a href="{{ url_for('artist_confirm_delete', artist_id=artist.ArtistId) }}"
+                                    class="btn btn-sm btn-danger">
+                                    Delete
+                                    </a>
+<!--                                    
+                                    {% if session.get('roleid', 99) < 2 %}
+                                        <a href="{{ url_for('artist_edit', artist_id=artist.ArtistId) }}"
+                                        class="btn btn-sm btn-primary">
+                                        Edit
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('log_unauthorized_edit_attempt', track_id=artist.ArtistId) }}"
+                                        class="btn btn-sm btn-primary"
+                                        onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
+                                        Edit
+                                        </a>
+                                    {% endif %}
+
+                                    {% if session.get('roleid', 99) < 2 %}
+                                        <a href="{{ url_for('artist_confirm_delete', artist_id=artist.ArtistId) }}"
+                                        class="btn btn-sm btn-danger">
+                                        Delete
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ url_for('log_unauthorized_delete_attempt', track_id=artist.ArtistId) }}"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
+                                        Delete
+                                        </a>
+                                    {% endif %}
+                                    -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted">No artists found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock main %}
+
+{% block footer %}
+<p>Footer</p>
+{% endblock footer %}

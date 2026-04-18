@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block main %}
+
+<h2>Add New Track</h2>
+
+{% if error_msg %}
+<div class="alert alert-danger">{{ error_msg }}</div>
+{% endif %}
+
+<form method="POST">
+
+    <label>Name:</label>
+    <input type="text" name="name" required>
+
+    <label>Album:</label>
+    <select name="album">
+        {% for a in albums %}
+            <option value="{{ a.AlbumId }}">{{ a.Title }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Media Type:</label>
+    <select name="media_type">
+        {% for m in media_types %}
+            <option value="{{ m.MediaTypeId }}">{{ m.Name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Genre:</label>
+    <select name="genre">
+        {% for g in genres %}
+            <option value="{{ g.GenreId }}">{{ g.Name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Length (ms):</label>
+    <input type="number" name="milliseconds" required>
+
+    <label>Unit Price:</label>
+    <input type="number" step="0.01" name="unit_price" required>
+
+    <button type="submit">Add Track</button>
+</form>
+
+{% endblock main %}
+
+{% block footer %}
+<p>Footer</p>
+
+{% endblock footer %}

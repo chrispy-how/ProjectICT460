@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{{ title }}</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="" width=device-width, initial-scale="1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/chouser.css') }}" >
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="container-fluid p-5 bg-primary text-white text-centert text-center">
+                <h1>{{ label }}</h1>
+                <p>This is our Vinyl enthusiast page..</p>
+                {% if session.get('user') %}
+                <h4>Welcome, {{ session.get('user') }}</h4>
+                {% endif %}
+
+            </div>
+            <nav class="navbar navbar-expand-sm bg-secondary navbar-dark">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/artists">Artists</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tracks">Tracks</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        {% if session.get('user') %}
+                        <li class="nav-item">
+                            <span class="nav-link text-light">{{ session.get('user') }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Logout</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+
+            {% block main %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mt-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <script>
+                // if there is a flash alert, scroll it into view and keep it visible a bit longer
+                window.addEventListener('DOMContentLoaded', () => {
+                    const alert = document.querySelector('.alert');
+                    if (alert) {
+                        alert.scrollIntoView({behavior: 'smooth'});
+                        // optional auto hide after 8 seconds
+                        setTimeout(() => {
+                            const bsAlert = new bootstrap.Alert(alert);
+                            bsAlert.close();
+                        }, 8000);
+                    }
+                });
+            </script>
+
+            {% endblock main %}
+        <div class="mt-5 p-4 bg-dark text-white text-center">
+
+            {% block footer %}
+
+            {% endblock footer %}
+        </div>
+    </body>
+</html>

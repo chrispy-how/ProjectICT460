@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<div class="row mt-4">
+    <div class="col-md-12 mb-2">
+        <a href="{{ url_for('track_add') }}" class="btn btn-success">Add New Track</a>
+    </div>
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">Filter Tracks</h4>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('tracks') }}" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Artist</label>
+                        <select name="artist" class="form-select">
+                            <option value="">All Artists</option>
+                            {% for a in filters.artists %}
+                            <option value="{{ a.ArtistId }}" {% if selected_artist == a.ArtistId|string %}selected{% endif %}>{{ a.Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">Album</label>
+                        <select name="album" class="form-select">
+                            <option value="">All Albums</option>
+                            {% for alb in filters.albums %}
+                            <option value="{{ alb.AlbumId }}" {% if selected_album == alb.AlbumId|string %}selected{% endif %}>{{ alb.Title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Genre</label>
+                        <select name="genre" class="form-select">
+                            <option value="">All Genres</option>
+                            {% for g in filters.genres %}
+                            <option value="{{ g.GenreId }}" {% if selected_genre == g.GenreId|string %}selected{% endif %}>{{ g.Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label">Format</label>
+                        <select name="media_type" class="form-select">
+                            <option value="">All Formats</option>
+                            {% for m in filters.media_types %}
+                            <option value="{{ m.MediaTypeId }}" {% if selected_media == m.MediaTypeId|string %}selected{% endif %}>{{ m.Name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <table class="table table-hover table-striped border">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Track</th>
+                    <th>Album</th>
+                    <th>Artist</th>
+                    <th>Genre</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in tracks %}
+                <tr>
+                    <td>{{ track.TrackName }}</td>
+                    <td class="text-muted italic"><em>{{ track.AlbumTitle }}</em></td>
+                    <td>{{ track.ArtistName }}</td>
+                    <td><span class="badge bg-info text-dark">{{ track.GenreName }}</span></td>
+                    <td>
+                        <a href="{{ url_for('track_edit', track_id=track.TrackId) }}"
+                        class="btn btn-sm btn-primary">
+                        Edit
+                        </a>
+                        <a href="{{ url_for('track_confirm_delete', track_id=track.TrackId) }}"
+                        class="btn btn-sm btn-danger">
+                        Delete
+                        </a>
+
+<!--                        {% if session.get('roleid', 99) < 2 %}
+                            <a href="{{ url_for('track_edit', track_id=track.TrackId) }}"
+                            class="btn btn-sm btn-primary">
+                            Edit
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('log_unauthorized_edit_attempt', track_id=track.TrackId) }}"
+                            class="btn btn-sm btn-primary"
+                            onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
+                            Edit
+                            </a>
+                        {% endif %}
+
+                        {% if session.get('roleid', 99) < 2 %}
+                            <a href="{{ url_for('track_confirm_delete', track_id=track.TrackId) }}"
+                            class="btn btn-sm btn-danger">
+                            Delete
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('log_unauthorized_delete_attempt', track_id=track.TrackId) }}"
+                            class="btn btn-sm btn-danger"
+                            onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
+                            Delete
+                            </a>
+                        {% endif %}
+                        -->
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center py-4">No tracks match your selection.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock main %}
+
+{% block footer %}
+<p>Footer</p>
+
+{% endblock footer %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block main %}
+
+<h2>Edit Track</h2>
+
+{% if error_msg %}
+<div class="alert alert-danger">{{ error_msg }}</div>
+{% endif %}
+
+<form method="POST">
+
+    <label>Name:</label>
+    <input type="text" name="name" value="{{ track.Name }}" required>
+
+    <label>Album:</label>
+    <select name="album">
+        {% for a in albums %}
+            <option value="{{ a.AlbumId }}"
+                {% if a.AlbumId == track.AlbumId %}selected{% endif %}>
+                {{ a.Title }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Media Type:</label>
+    <select name="media_type">
+        {% for m in media_types %}
+            <option value="{{ m.MediaTypeId }}"
+                {% if m.MediaTypeId == track.MediaTypeId %}selected{% endif %}>
+                {{ m.Name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Genre:</label>
+    <select name="genre">
+        {% for g in genres %}
+            <option value="{{ g.GenreId }}"
+                {% if g.GenreId == track.GenreId %}selected{% endif %}>
+                {{ g.Name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Length (ms):</label>
+    <input type="number" name="milliseconds" value="{{ track.Milliseconds }}" required>
+
+    <label>Unit Price:</label>
+    <input type="number" step="0.01" name="unit_price" value="{{ track.UnitPrice }}" required>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+{% endblock main %}
+
+{% block footer %}
+<p>Footer</p>
+
+{% endblock footer %}
