@@ -62,7 +62,7 @@ title = "James Smith's Vinyl Emporium"
 lbl = " Welcome to our Vinyl Emporium "
 
 app = Flask(__name__)
-app.secret_key = "APhraseOrSeriesOfRandomCharacters"   # Needed for sessions
+app.config.from_object('config')
 
 # -------------------------
 #  LOGIN REQUIRED DECORATOR

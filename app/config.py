@@ -1,0 +1,4 @@
+DEBUG = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SECRET_KEY = 'ReplaceWithEnvironmentVariable'
