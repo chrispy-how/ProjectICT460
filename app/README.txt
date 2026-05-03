@@ -1,5 +1,3 @@
-TaskEasy Co. Productivity Suite
-A Flask-based web application designed for college students to manage tasks with priority sorting and persistence.
 Setup Instructions:
 Open the terminal in the project folder
 Create a virtual environment
