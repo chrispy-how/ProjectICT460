@@ -537,4 +537,4 @@ class ConditionalStaticLogFilter(WSGIRequestHandler):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, request_handler=ConditionalStaticLogFilter)
+    app.run(host="0.0.0.0", request_handler=ConditionalStaticLogFilter)
