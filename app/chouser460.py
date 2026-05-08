@@ -148,6 +148,11 @@ def logout():
 #        ROUTES
 # -------------------------
 
+# -------------------------
+# Christine Houser
+# ICT 460 Final Project
+# -------------------------
+
 @app.route("/")
 @app.route("/home")
 @login_required
