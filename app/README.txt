@@ -1,8 +1,8 @@
 Setup Instructions:
 Open the terminal in the project folder
 Create a virtual environment
-Windows: python -m venv venv
-Mac/Linux: python3 -m venv venv
+Windows: python -m venv P3_venv
+Mac/Linux: python3 -m venv P3_venv
 Activate the environment:
 Windows: venv\Scripts\activate
 Mac/Linux: source venv/bin/activate

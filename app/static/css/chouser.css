@@ -6,3 +6,9 @@
     height: auto;
     display: block;  /* Prevents small space below image */
 }
+
+.action-column {
+    white-space: nowrap;
+    width: 140px;   /* adjust as needed */
+    text-align: right;
+}

@@ -181,7 +181,6 @@ def tracks():
 def track_add():
 
     filters = get_filter_options()
-    error_msg = None
 
     if request.method == "POST":
         # Unauthorized attempt
@@ -189,7 +188,8 @@ def track_add():
             logging.warning(
                 f"Unauthorized attempt to add a track by user '{session.get('user')}'"
             )
-            error_msg = "Not allowed to make changes to data"
+            flash("Not allowed", "error")
+            return redirect(url_for('tracks'))
 
         else:
             name = request.form.get("name")
@@ -220,8 +220,8 @@ def track_add():
               label=lbl,
               albums=filters['albums'],
               media_types=filters['media_types'],
-              genres=filters['genres'],
-              error_msg=error_msg)
+              genres=filters['genres']
+    )
 
 @app.route("/track_edit/<int:track_id>", methods=["GET", "POST"])
 @login_required
@@ -242,42 +242,31 @@ def track_edit(track_id):
         flash("Track not found", "error")
         return redirect(url_for('tracks'))
 
-    error_msg = None
-
     if request.method == "POST":
-        # Unauthorized attempt
-        if session.get('roleid', 99) > 2:
+        name = request.form.get("name")
+        album = request.form.get("album")
+        media = request.form.get("media_type")
+        genre = request.form.get("genre")
+        milliseconds = request.form.get("milliseconds")
+        unit_price = request.form.get("unit_price")
+
+        success = update_track(
+            track_id, name, album, media, genre, milliseconds, unit_price
+        )
+
+        if success:
+            logging.info(
+                f"Track {track_id} updated successfully by user '{session.get('user')}' "
+                f"(new name: '{name}')"
+            )
+            flash("Track updated", "info")
+            return redirect(url_for('tracks'))
+        else:
             logging.warning(
-                f"Unauthorized attempt to edit track {track_id} "
+                f"Track update failed for track {track_id} "
                 f"by user '{session.get('user')}'"
             )
-            error_msg = "Not allowed to make changes to data"
-
-        else:
-            name = request.form.get("name")
-            album = request.form.get("album")
-            media = request.form.get("media_type")
-            genre = request.form.get("genre")
-            milliseconds = request.form.get("milliseconds")
-            unit_price = request.form.get("unit_price")
-
-            success = update_track(
-                track_id, name, album, media, genre, milliseconds, unit_price
-            )
-
-            if success:
-                logging.info(
-                    f"Track {track_id} updated successfully by user '{session.get('user')}' "
-                    f"(new name: '{name}')"
-                )
-                flash("Track updated", "info")
-                return redirect(url_for('tracks'))
-            else:
-                logging.warning(
-                    f"Track update failed for track {track_id} "
-                    f"by user '{session.get('user')}'"
-                )
-                flash("Failed to update track", "error")
+            flash("Failed to update track", "error")
 
     return rt(
         "track_edit.html",
@@ -286,8 +275,7 @@ def track_edit(track_id):
         track=track,
         albums=filters['albums'],
         media_types=filters['media_types'],
-        genres=filters['genres'],
-        error_msg=error_msg
+        genres=filters['genres']
     )
 
 @app.route("/track_confirm_delete/<int:track_id>", methods=["GET", "POST"])
@@ -310,7 +298,8 @@ def track_confirm_delete(track_id):
                 f"Unauthorized attempt to delete track {track_id} "
                 f"('{track_name}') by user '{session.get('user')}'"
             )
-            error_msg = "Not allowed to make changes to the data"
+            flash("Not allowed to delete track", "error")
+            return redirect(url_for('tracks'))
         else:
             if delete_track(track_id):
                 logging.info(
@@ -337,7 +326,8 @@ def track_confirm_delete(track_id):
 @login_required
 def track_delete(track_id):
     track = get_track(track_id)
-    track_name = track.get("Name") if track else "Unknown"
+    track_name = track["Name"] if track and "Name" in track else "Unknown"
+
 
     # Unauthorized attempt
     if session.get('roleid', 99) > 2:
@@ -387,7 +377,8 @@ def artist_add():
             logging.warning(
                 f"Unauthorized attempt to add an artist by user '{session.get('user')}'"
             )
-            error_msg = "Not allowed to make changes to the data"
+            flash("Not allowed to make changes to the data", "error")
+            return redirect(url_for('artists'))
 
         else:
             name = request.form.get("name")
@@ -409,32 +400,47 @@ def artist_add():
 @app.route("/artist_edit/<int:artist_id>", methods=["GET", "POST"])
 @login_required
 def artist_edit(artist_id):
+
+    # Block unauthorized access entirely (GET or POST)
+    if session.get('roleid', 99) > 2:
+        logging.warning(
+            f"Unauthorized attempt to ACCESS artist_edit for artist {artist_id} "
+            f"by user '{session.get('user')}'"
+        )
+        flash("Not allowed to access this page", "error")
+        return redirect(url_for('artists'))
+
     artist = get_artist(artist_id)
     if not artist:
         flash("Artist not found", "error")
         return redirect(url_for('artists'))
+
     error_msg = None
+
     if request.method == "POST":
-        if session.get('roleid', 99) > 2:
-            logging.warning(
-                f"Unauthorized attempt to edit an artist by user '{session.get('user')}'"
-            )
-            error_msg = "Not allowed to make changes to the data"
+        name = request.form.get("name")
+        if not name or not name.strip():
+            error_msg = "Artist name is required"
         else:
-            name = request.form.get("name")
-            if not name or not name.strip():
-                error_msg = "Artist name is required"
+            if update_artist(artist_id, name):
+                logging.info(
+                    f"Artist {artist_id} updated successfully by user '{session.get('user')}' "
+                    f"(new name: '{name}')"
+                )
+                flash("Artist updated", "info")
+                return redirect(url_for('artists'))
             else:
-                if update_artist(artist_id, name):
-                    logging.info(
-                        f"Artist {artist_id} updated successfully by user '{session.get('user')}' "
-                        f"(new name: '{name}')"
-                    )                    
-                    flash("Artist updated", "info")
-                    return redirect(url_for('artists'))
-                else:
-                    error_msg = "Failed to update artist"
-    return rt("artist_edit.html", title=title, label=lbl, artist=artist, error_msg=error_msg)
+                logging.warning(
+                    f"Artist update failed for artist {artist_id} "
+                    f"by user '{session.get('user')}'"
+                )
+                error_msg = "Failed to update artist"
+
+    return rt("artist_edit.html",
+              title=title,
+              label=lbl,
+              artist=artist,
+              error_msg=error_msg)
 
 @app.route("/artist_confirm_delete/<int:artist_id>", methods=["GET", "POST"])
 @login_required
@@ -443,51 +449,74 @@ def artist_confirm_delete(artist_id):
 
     # Fetch artist early so we can log with the name
     artist = get_artist(artist_id)
+    if not artist:
+        flash("Artist not found", "error")
+        return redirect(url_for('artists'))
+
     artist_name = artist["Name"] if artist else "Unknown"
 
     if request.method == "POST":
+        # Unauthorized attempt
         if session.get('roleid', 99) > 2:
             logging.warning(
                 f"Unauthorized attempt to delete artist {artist_id} "
                 f"('{artist_name}') by user '{session.get('user')}'"
             )
-            error_msg = "Not allowed to make changes to the data"
+            flash("Not allowed to delete artist", "error")
+            return redirect(url_for('artists'))
 
+        # Authorized delete
+        if delete_artist(artist_id):
+            logging.info(
+                f"Artist {artist_id} ('{artist_name}') deleted successfully "
+                f"by user '{session.get('user')}'"
+            )
+            flash("Artist deleted", "info")
+            return redirect(url_for('artists'))
         else:
-            if delete_artist(artist_id):
-                logging.info(
-                    f"Artist {artist_id} ('{artist_name}') deleted successfully "
-                    f"by user '{session.get('user')}'"
-                )
-                flash("Artist deleted", "info")
-                return redirect(url_for('artists'))
-            else:
-                logging.warning(
-                    f"Artist deletion failed for artist {artist_id} "
-                    f"('{artist_name}') by user '{session.get('user')}'"
-                )
-                flash("Cannot delete artist (has albums or not found)", "error")
-                return redirect(url_for('artists'))
+            logging.warning(
+                f"Artist deletion failed for artist {artist_id} "
+                f"('{artist_name}') by user '{session.get('user')}'"
+            )
+            flash("Cannot delete artist (has albums or not found)", "error")
+            return redirect(url_for('artists'))
 
-    # GET request or POST with error
-    if not artist:
-        flash("Artist not found", "error")
-        return redirect(url_for('artists'))
-
+    # GET request
     return rt("artist_confirm_delete.html",
               title=title,
               label=lbl,
               artist=artist,
               error_msg=error_msg)
 
-# legacy POST delete
 @app.route("/artist_delete/<int:artist_id>", methods=["POST"])
 @login_required
 def artist_delete(artist_id):
+    artist = get_artist(artist_id)
+    artist_name = artist["Name"] if artist and "Name" in artist else "Unknown"
+
+    # Unauthorized attempt
+    if session.get('roleid', 99) > 2:
+        logging.warning(
+            f"Unauthorized attempt to delete artist {artist_id} "
+            f"('{artist_name}') by user '{session.get('user')}'"
+        )
+        flash("Not allowed", "error")
+        return redirect(url_for('artists'))
+
+    # Authorized delete
     if delete_artist(artist_id):
+        logging.info(
+            f"Artist {artist_id} ('{artist_name}') deleted successfully "
+            f"by user '{session.get('user')}'"
+        )
         flash("Artist deleted", "info")
     else:
+        logging.warning(
+            f"Artist deletion failed for artist {artist_id} "
+            f"('{artist_name}') by user '{session.get('user')}'"
+        )
         flash("Cannot delete artist (has albums or not found)", "error")
+
     return redirect(url_for('artists'))
 
 @app.route("/log_unauthorized_delete_attempt/<int:track_id>", methods=["POST"])
@@ -511,7 +540,7 @@ def log_unauthorized_edit_attempt(track_id):
     track_name = track["Name"] if track else "Unknown"
 
     logging.error(
-        f"Unauthorized click on disabled edit button for artist {track_id} "
+        f"Unauthorized click on disabled edit button for track {track_id} "
         f"('{track_name}') by user '{session.get('user')}'"
     )
 

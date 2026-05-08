@@ -81,7 +81,7 @@
                     <td class="text-muted italic"><em>{{ track.AlbumTitle }}</em></td>
                     <td>{{ track.ArtistName }}</td>
                     <td><span class="badge bg-info text-dark">{{ track.GenreName }}</span></td>
-                    <td>
+                    <td class="action-column">
                         <a href="{{ url_for('track_edit', track_id=track.TrackId) }}"
                         class="btn btn-sm btn-primary">
                         Edit
@@ -91,32 +91,6 @@
                         Delete
                         </a>
 
-<!--                        {% if session.get('roleid', 99) < 2 %}
-                            <a href="{{ url_for('track_edit', track_id=track.TrackId) }}"
-                            class="btn btn-sm btn-primary">
-                            Edit
-                            </a>
-                        {% else %}
-                            <a href="{{ url_for('log_unauthorized_edit_attempt', track_id=track.TrackId) }}"
-                            class="btn btn-sm btn-primary"
-                            onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
-                            Edit
-                            </a>
-                        {% endif %}
-
-                        {% if session.get('roleid', 99) < 2 %}
-                            <a href="{{ url_for('track_confirm_delete', track_id=track.TrackId) }}"
-                            class="btn btn-sm btn-danger">
-                            Delete
-                            </a>
-                        {% else %}
-                            <a href="{{ url_for('log_unauthorized_delete_attempt', track_id=track.TrackId) }}"
-                            class="btn btn-sm btn-danger"
-                            onclick="event.preventDefault(); fetch(this.href, {method: 'POST'});">
-                            Delete
-                            </a>
-                        {% endif %}
-                        -->
                     </td>
                 </tr>
                 {% else %}
